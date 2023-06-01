@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,9 +7,12 @@ using StackExchange.Redis;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extensions;
+using Talabat.Domain.Entities.Identity;
 using Talabat.Domain.IRepository;
 using Talabat.Repository;
 using Talabat.Repository.Data;
+using Talabat.Repository.identity;
+
 namespace Talabat.APIs
 {
     public class Program
@@ -27,6 +31,10 @@ namespace Talabat.APIs
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+            });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(S =>
             {
@@ -34,6 +42,8 @@ namespace Talabat.APIs
 
                 return ConnectionMultiplexer.Connect(connection);
             });
+            builder.Services.AddIdentityServices(builder.Configuration);
+
             builder.Services.AddServices();
 
             var app = builder.Build();
@@ -49,6 +59,13 @@ namespace Talabat.APIs
                 await dbContext.Database.MigrateAsync();
 
                 await StoreContextSeed.SeedData(dbContext);
+
+                var identityDbContext = services.GetRequiredService<AppIdentityDbContext>();
+
+                await identityDbContext.Database.MigrateAsync();
+
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await IdentityDbContextSeed.SeedUserAsync(userManager);
             }
             catch (Exception ex)
             {
@@ -64,7 +81,7 @@ namespace Talabat.APIs
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseStaticFiles();
 

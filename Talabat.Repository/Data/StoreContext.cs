@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Talabat.Domain.Entities;
+using Talabat.Domain.Entities.Order;
 
 namespace Talabat.Repository.Data
 {
@@ -25,5 +26,8 @@ namespace Talabat.Repository.Data
         public DbSet<Product> Products { get; set; }
     public  DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<OrderItem> orderItems { get; set; }
+        public DbSet<Order> orders { get; set; }
+        public DbSet<DeliveryMethod> delivaryMethods { get; set; }
     }
 }

@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Talabat.Domain.Entities;
 using Talabat.Domain.IRepository;
-using StackExchange.Redis;
 using System.Text.Json;
+using StackExchange.Redis;
 
 namespace Talabat.Repository
 {

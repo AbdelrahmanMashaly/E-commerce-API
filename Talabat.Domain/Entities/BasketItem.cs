@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Talabat.Domain.Entities
 {
-    public class BasketItem : BaseEntity
+    public class BasketItem 
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public decimal Salary { get; set; }
         public int Quantity { get; set; }

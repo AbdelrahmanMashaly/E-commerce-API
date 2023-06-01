@@ -12,9 +12,9 @@ namespace Talabat.Domain.Specifications
         public int? brandId { get; set; }
         public int? typeId { get; set; }
 
-        private string search;
+        private string? search;
 
-        public string Search
+        public string? Search
         {
             get { return search; }
             set { search = value.ToLower(); }
